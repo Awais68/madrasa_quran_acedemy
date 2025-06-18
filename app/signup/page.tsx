@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -20,12 +21,16 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
-import { Moon, Star } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Moon, Star } from "lucide-react";
 import { IslamicBackground } from "@/components/islamic-background";
 import axios from "axios";
 import { AppRoutes } from "@/app/constant/constant";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Signup() {
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const data = {
@@ -35,13 +40,12 @@ export default function Signup() {
       password: e.target.password.value,
       phone: e.target.phone.value,
       // confirmPassword: e.target.confirmPassword.value,
-      // address: e.target.address.value,
       // DOB: e.target.DOB.value,
       // city: e.target.city.value,
       // country: e.target.country.value,
-      // ageGroup: e.target.ageGroup.value,
-      // currentLevel: e.target.currentLevel.value,
-      // // terms: e.target.terms.value,
+      age: e.target.age.value,
+      currentLevel: e.target.currentLevel.value,
+      // terms: e.target.terms.value,
       // role: "student",
     };
     console.log("data==>>>", data);
@@ -49,6 +53,9 @@ export default function Signup() {
     try {
       const response = await axios.post(AppRoutes.signup, data);
       console.log(response);
+      if (response.status === 200 || 201) {
+        router.push("/login");
+      }
     } catch (err: any) {
       console.log("api message===>>>>>>>", err.message);
     }
@@ -126,17 +133,17 @@ export default function Signup() {
                 <Input
                   id="phone"
                   name="phone"
-                  type="tel"
+                  type="number"
                   placeholder="+1 (555) 123-4567"
                   className="border-blue-200 focus:border-blue-400"
                 />
               </div>
 
-              {/* <div>
+              <div>
                 <Label htmlFor="age" className="text-blue-900">
                   Age Group
                 </Label>
-                <Select>
+                <Select name="age" required>
                   <SelectTrigger className="border-blue-200 focus:border-blue-400">
                     <SelectValue placeholder="Select age group" />
                   </SelectTrigger>
@@ -146,13 +153,13 @@ export default function Signup() {
                     <SelectItem value="adult">Adult (18+)</SelectItem>
                   </SelectContent>
                 </Select>
-              </div> */}
+              </div>
 
-              {/* <div>
+              <div>
                 <Label htmlFor="level" className="text-blue-900">
                   Current Level
                 </Label>
-                <Select>
+                <Select name="currentLevel" required>
                   <SelectTrigger className="border-blue-200 focus:border-blue-400">
                     <SelectValue placeholder="Select your level" />
                   </SelectTrigger>
@@ -162,19 +169,31 @@ export default function Signup() {
                     <SelectItem value="advanced">Advanced</SelectItem>
                   </SelectContent>
                 </Select>
-              </div> */}
+              </div>
 
-              <div>
-                <Label htmlFor="password" className="text-blue-900">
+              <div className="relative">
+                <Label htmlFor="password" className="text-red-700 ">
                   Password
                 </Label>
                 <Input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Create a strong password"
-                  className="border-blue-200 focus:border-blue-400"
+                  className=" border-blue-200 focus:border-pink-400 pr-10"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-9 text-sm text-blue-500"
+                >
+                  {/* {showPassword ? "Hide" : "Show"} */}
+                  {showPassword ? (
+                    <EyeOffIcon size={20} />
+                  ) : (
+                    <EyeIcon size={20} />
+                  )}
+                </button>
               </div>
 
               {/* <div>
